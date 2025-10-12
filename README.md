@@ -1,18 +1,29 @@
-# React + Vite
+# Fresh Farm
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Fresh Farm is a web-based platform designed to streamline the process of buying and selling fresh produce. The application provides users with a clean, user-friendly interface to browse, order, and manage fresh farm products. It supports both farmers and customers, allowing for easy transactions and order management.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User-Friendly Interface**: Intuitive design that is easy to navigate for both farmers and customers.
+- **Product Catalog**: Browse fresh produce items categorized by type, season, and availability.
+- **Responsive Design**: Fully responsive, ensuring a smooth experience on both desktop and mobile devices.
+- **Authentication**: Mock User authentication for users.
 
-## React Compiler
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Tech Stack
 
-Note: This will impact Vite dev & build performances.
+- **Frontend**: HTML, CSS, JavaScript (React)
 
-## Expanding the ESLint configuration
+- **Hosting**: Deployed on Vercel
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+
+### Clone the repository
+
+```bash
+git clone https://github.com/Omar-webcloud/fresh-farm.git
+
