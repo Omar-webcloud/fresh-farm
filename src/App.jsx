@@ -16,7 +16,7 @@ const DEMO_PRODUCTS = [
 
 /* ---------- Helper Functions ---------- */
 const bdPhone = (num) => /^(\+8801)[3-9][0-9]{8}$/.test(num);
-const publicImage = (query) => `https://placehold.co/600x400?text=${encodeURIComponent(query)}`;
+const publicImage = (query) => `/${query.toLowerCase()}.jpg`;
 
 
 /* ---------- Main App ---------- */
@@ -74,10 +74,12 @@ export default function App() {
     <div>
       {/* Navbar */}
       <header className="navbar">
-        <div className="logo">Fresh Farm</div>
-        <div className="subtitle" style={{ fontSize: "1.05rem", fontWeight: 500, marginTop: 4, color: "#fff", opacity: 0.85 }}>
+        <div>
+    <div className="logo">Fresh Farm</div>
+    <div className="subtitle">
       Fresh fruits and veggies straight off the farm
     </div>
+  </div>
         <div className="nav-right">
           {user ? (
             <>

@@ -5,6 +5,15 @@ body {
   color: #f5f5f5;
 }
 
+.subtitle {
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-top: 4px;
+  color: #fff;
+  opacity: 0.85;
+  letter-spacing: 0.2px;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
