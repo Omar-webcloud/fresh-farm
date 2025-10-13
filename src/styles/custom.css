@@ -339,7 +339,7 @@ body {
 /* Mobile screens */
 @media (max-width: 768px) {
   .cart-panel {
-    width: 100%;
+    width: 90%;
     border-radius: 0;
     border-left: none;
     border-top-left-radius: 18px;
