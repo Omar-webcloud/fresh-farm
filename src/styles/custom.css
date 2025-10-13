@@ -323,12 +323,16 @@ body {
 }
 
 
-
 /* Tablet screens */
 @media (max-width: 1024px) {
   .cart-panel {
     width: 320px;
     padding: 20px;
+  }
+
+  .close-btn,
+  .remove-btn {
+    font-size: 18px;
   }
 }
 
@@ -346,3 +350,15 @@ body {
     left: 0;
     box-shadow: 0 -2px 16px rgba(255, 111, 30, 0.10);
   }
+
+  .close-btn,
+  .remove-btn {
+    font-size: 24px;
+    color: #444;
+  }
+
+  .close-btn:hover,
+  .remove-btn:hover {
+    color: #ff3b30;
+  }
+}
