@@ -321,3 +321,28 @@ body {
   color: #fff;
   font-size: 1rem;
 }
+
+
+
+/* Tablet screens */
+@media (max-width: 1024px) {
+  .cart-panel {
+    width: 320px;
+    padding: 20px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+  .cart-panel {
+    width: 100%;
+    border-radius: 0;
+    border-left: none;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    bottom: 0;
+    top: auto;
+    right: 0;
+    left: 0;
+    box-shadow: 0 -2px 16px rgba(255, 111, 30, 0.10);
+  }
