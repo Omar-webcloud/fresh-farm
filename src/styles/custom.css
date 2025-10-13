@@ -338,6 +338,13 @@ body {
 
 /* Mobile screens */
 @media (max-width: 768px) {
+
+.popup-box input {
+  width: 90%;
+}
+
+
+
   .cart-panel {
     width: 90%;
     border-radius: 0;
