@@ -12,7 +12,7 @@ Fresh Farm is a web-based platform designed to streamline the process of buying 
 
 ## Tech Stack
 
-- **Frontend**: HTML, CSS, JavaScript (React)
+- **Frontend**: CSS, JavaScript (React)
 
 - **Hosting**: Deployed on Vercel
 
