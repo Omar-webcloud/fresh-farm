@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function ProductCard({ product, onClick }) {
+const ProductCard = React.memo(function ProductCard({ product, onClick }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
@@ -16,4 +16,6 @@ export default function ProductCard({ product, onClick }) {
       <p>${product.price}</p>
     </div>
   );
-}
+});
+
+export default ProductCard;
