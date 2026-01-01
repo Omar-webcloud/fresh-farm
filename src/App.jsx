@@ -202,7 +202,7 @@ export default function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2025 Omar. All Rights Reserved.</p>
+          <p>&copy; 2026 Omar. All Rights Reserved.</p>
         </div>
       </footer>
     </div>
