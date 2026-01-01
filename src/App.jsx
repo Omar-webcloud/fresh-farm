@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import ProductCard from "./components/ProductCard";
 import Popup from "./components/Popup";
 import CartPanel from "./components/CartPanel";
@@ -86,6 +86,11 @@ export default function App() {
   const vegetables = useMemo(() => filteredProducts.filter(p => p.category === 'Vegetables'), [filteredProducts]);
   const fruits = useMemo(() => filteredProducts.filter(p => p.category === 'Fruits'), [filteredProducts]);
 
+  // Performance optimization: Memoize the click handler to prevent unnecessary re-renders of ProductCard
+  const handleProductClick = useCallback((product) => {
+    setShowPopup(product);
+  }, []);
+
   return (
     <div>
       <header className="navbar">
@@ -123,7 +128,7 @@ export default function App() {
           <h2 className="category-header">Vegetables</h2>
           <div className="product-grid">
             {vegetables.map((p) => (
-              <ProductCard key={p.id} product={p} onClick={() => setShowPopup(p)} />
+              <ProductCard key={p.id} product={p} onClick={handleProductClick} />
             ))}
           </div>
         </div>
@@ -132,7 +137,7 @@ export default function App() {
           <h2 className="category-header">Fruits</h2>
           <div className="product-grid">
             {fruits.map((p) => (
-              <ProductCard key={p.id} product={p} onClick={() => setShowPopup(p)} />
+              <ProductCard key={p.id} product={p} onClick={handleProductClick} />
             ))}
           </div>
         </div>
