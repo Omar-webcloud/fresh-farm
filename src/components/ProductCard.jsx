@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
-export default function ProductCard({ product, onClick }) {
+// Performance optimization: Prevent re-renders when props (product, onClick) don't change
+const ProductCard = React.memo(function ProductCard({ product, onClick }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
@@ -16,4 +17,6 @@ export default function ProductCard({ product, onClick }) {
       <p>${product.price}</p>
     </div>
   );
-}
+});
+
+export default ProductCard;
