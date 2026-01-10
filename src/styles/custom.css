@@ -66,6 +66,15 @@ body {
   color: #fff;
 }
 
+.cart-icon {
+  font-size: 1.3em;
+  vertical-align: middle;
+}
+
+.cart-count {
+  margin-left: 6px;
+}
+
 .products-section {
   padding: 2rem;
   animation: fadeIn 1s ease-in;
