@@ -9,6 +9,8 @@ import { bdPhone, publicImage } from "./utils/helpers";
 
 
 
+import DealOfTheDay from "./components/DealOfTheDay";
+
 export default function App() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,9 +68,17 @@ export default function App() {
   };
 
   const cartItems = useMemo(() => Object.entries(cart).map(([id, qty]) => {
-    const product = products.find((p) => p.id === id);
-    return { ...product, quantity: qty };
-  }), [cart, products]);
+    let product = products.find((p) => p.id === id);
+    if (!product && id === "deal-1") {
+       product = { 
+          id: "deal-1", 
+          title: "Premium Pumpkin", 
+          price: 3.0, 
+          image: "/pumpkin.jpg" 
+       }; 
+    }
+    return product ? { ...product, quantity: qty } : null;
+  }).filter(Boolean), [cart, products]);
 
   const filteredProducts = useMemo(() => {
     if (!searchQuery) return products;
@@ -109,6 +119,7 @@ export default function App() {
       </header>
 
       <Hero />
+      <DealOfTheDay onAddToCart={addToCart} />
 
       <main id="products" className="products-section">
         <div className="category-section">
