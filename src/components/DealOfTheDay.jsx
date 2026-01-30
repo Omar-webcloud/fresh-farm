@@ -18,7 +18,7 @@ export default function DealOfTheDay({ onAddToCart }) {
 
   const formatTime = (time) => String(time).padStart(2, '0');
 
-  // Hardcoded deal product data matches the structure needed for cart
+
   const dealProduct = {
     id: "deal-1",
     title: "Premium Pumpkin",

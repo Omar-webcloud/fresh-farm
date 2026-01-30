@@ -11,7 +11,7 @@ export default function Popup({ product, children, onClose, onAddToCart }) {
             <h2>{product.title}</h2>
             <p>{product.description}</p>
             <p>${product.price}</p>
-            <button onClick={() => onAddToCart(product)}>Add to Cart</button>
+            <button className="action-btn" onClick={() => onAddToCart(product)}>Add to Cart</button>
           </>
         )}
         {children}

@@ -150,12 +150,12 @@ export default function App() {
           {!pendingOtp ? (
             <>
               <input value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)} placeholder="+8801XXXXXXXXX" />
-              <button onClick={sendOtp}>Send OTP</button>
+              <button className="action-btn" onClick={sendOtp}>Send OTP</button>
             </>
           ) : (
             <>
               <input value={otpInput} onChange={(e) => setOtpInput(e.target.value)} placeholder="Enter OTP" />
-              <button onClick={verifyOtp}>Verify OTP</button>
+              <button className="action-btn" onClick={verifyOtp}>Verify OTP</button>
             </>
           )}
         </Popup>

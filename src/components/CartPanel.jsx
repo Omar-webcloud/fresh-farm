@@ -6,7 +6,7 @@ export default function CartPanel({ cartItems, onClose, onRemove }) {
     <div className="cart-panel">
       <div className="cart-header">
         <h2>Cart</h2>
-        <button onClick={onClose}>✖</button>
+        <button className="close-btn" onClick={onClose}>✖</button>
       </div>
       {cartItems.length === 0 ? (
         <p>Cart is empty.</p>
