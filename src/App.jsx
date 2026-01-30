@@ -23,6 +23,15 @@ export default function App() {
   const [pendingOtp, setPendingOtp] = useState(null);
   const [toast, setToast] = useState(null);
   const [email, setEmail] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const demo = DEMO_PRODUCTS.map((p) => ({ ...p, image: publicImage(p.title) }));
@@ -90,7 +99,7 @@ export default function App() {
 
   return (
     <div>
-      <header className="navbar">
+      <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="nav-left">
           Fresh Farm
         </div>
