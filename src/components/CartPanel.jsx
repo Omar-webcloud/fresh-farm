@@ -1,7 +1,7 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
 
-export default function CartPanel({ cartItems, onClose, onRemove }) {
+export default function CartPanel({ cartItems, onClose, onRemove, onCheckout }) {
   const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
   return (
     <div className="cart-panel">
@@ -31,7 +31,7 @@ export default function CartPanel({ cartItems, onClose, onRemove }) {
           <span>Total:</span>
           <span>${total.toFixed(2)}</span>
         </div>
-        <button className="checkout-btn">Checkout Now</button>
+        <button className="checkout-btn" onClick={onCheckout}>Checkout Now</button>
       </div>
     </div>
   );

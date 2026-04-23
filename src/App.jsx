@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ProductCard from "./components/ProductCard";
 import Popup from "./components/Popup";
 import CartPanel from "./components/CartPanel";
@@ -13,14 +15,19 @@ export default function App() {
     DEMO_PRODUCTS.map((p) => ({ ...p, image: publicImage(p.title) }))
   );
   const [searchQuery, setSearchQuery] = useState("");
-  const [cart, setCart] = useState({});
-  const [user, setUser] = useState(null);
+  const [cart, setCart] = useState(() => {
+    const savedCart = sessionStorage.getItem("fresh_farm_cart");
+    return savedCart ? JSON.parse(savedCart) : {};
+  });
+  const [user, setUser] = useState(() => {
+    const savedUser = sessionStorage.getItem("fresh_farm_user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [showPopup, setShowPopup] = useState(null);
   const [showCart, setShowCart] = useState(false);
   const [phoneInput, setPhoneInput] = useState("");
   const [otpInput, setOtpInput] = useState("");
   const [pendingOtp, setPendingOtp] = useState(null);
-  const [toast, setToast] = useState(null);
   const [email, setEmail] = useState("");
   const [scrolled, setScrolled] = useState(false);
 
@@ -31,6 +38,14 @@ export default function App() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("fresh_farm_cart", JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
+    sessionStorage.setItem("fresh_farm_user", JSON.stringify(user));
+  }, [user]);
 
   useEffect(() => {
     fetch('https://dummyjson.com/products/category/groceries?limit=100')
@@ -48,40 +63,61 @@ export default function App() {
   }, []);
 
   const sendOtp = () => {
-    if (!bdPhone(phoneInput)) return setToast({ type: "error", text: "Invalid Bangladeshi phone" });
+    if (!bdPhone(phoneInput)) return toast.error("Invalid Bangladeshi phone");
     const code = Math.floor(1000 + Math.random() * 9000);
     setPendingOtp({ phone: phoneInput, code: code.toString() });
-    setToast({ type: "info", text: `Demo OTP: ${code}` });
+    toast.info(`Demo OTP: ${code}`, { autoClose: 10000 });
   };
 
   const verifyOtp = () => {
-    if (!pendingOtp) return setToast({ type: "error", text: "No OTP sent" });
+    if (!pendingOtp) return toast.error("No OTP sent");
     if (otpInput === pendingOtp.code) {
       setUser({ phone: pendingOtp.phone });
       setPendingOtp(null);
-      setToast({ type: "success", text: "Signed in" });
-    } else setToast({ type: "error", text: "Invalid OTP" });
+      toast.success("Signed in successfully!");
+    } else toast.error("Invalid OTP");
   };
   
-  const signOut = () => { setUser(null); setCart({}); };
+  const signOut = () => { 
+    setUser(null); 
+    setCart({}); 
+    sessionStorage.removeItem("fresh_farm_user");
+    sessionStorage.removeItem("fresh_farm_cart");
+  };
 
   const addToCart = (product) => {
-    if (!user) return setToast({ type: "warning", text: "Sign in first" });
     setCart((c) => ({ ...c, [product.id]: (c[product.id] || 0) + 1 }));
-    setToast({ type: "success", text: "Added to cart" });
+    toast.success(`${product.title} added to cart!`, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "dark",
+    });
   };
 
   const removeFromCart = (id) => {
     setCart((c) => { const copy = { ...c }; delete copy[id]; return copy; });
   };
 
+  const handleCheckout = () => {
+    if (cartItems.length === 0) return toast.warning("Your cart is empty");
+    setCart({});
+    setShowCart(false);
+    toast.success("Order placed successfully!", {
+      icon: "🎉"
+    });
+  };
+
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     if (email) {
-      setToast({ type: "success", text: "Thank you for subscribing!" });
+      toast.success("Thank you for subscribing! Stay fresh. 🌿");
       setEmail("");
     } else {
-      setToast({ type: "error", text: "Please enter a valid email." });
+      toast.error("Please enter a valid email.");
     }
   };
 
@@ -214,10 +250,26 @@ export default function App() {
       )}
 
       {showCart && (
-        <CartPanel cartItems={cartItems} onClose={() => setShowCart(false)} onRemove={removeFromCart} />
+        <CartPanel 
+          cartItems={cartItems} 
+          onClose={() => setShowCart(false)} 
+          onRemove={removeFromCart} 
+          onCheckout={handleCheckout}
+        />
       )}
 
-      {toast && <div className={`toast ${toast.type}`}>{toast.text}</div>}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
 
       <footer className="footer">
         <div className="footer-container">
