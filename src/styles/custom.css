@@ -63,7 +63,7 @@ body {
 
 .search-bar input {
   width: 100%;
-  padding: 12px 24px 12px 48px;
+  padding: 12px 48px 12px 48px;
   border-radius: var(--radius-input);
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
@@ -71,7 +71,6 @@ body {
   font-size: 0.95rem;
   transition: var(--transition);
   font-family: inherit;
-  backdrop-filter: blur(4px);
 }
 
 .search-icon-wrapper {
@@ -84,6 +83,35 @@ body {
   font-size: 1.1rem;
   display: flex;
   align-items: center;
+  transition: var(--transition);
+}
+
+.clear-search-btn {
+  position: absolute !important;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-muted) !important;
+  padding: 8px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition) !important;
+  box-shadow: none !important;
+  border-radius: 50% !important;
+}
+
+.clear-search-btn:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+.clear-search-btn:active {
+  transform: translateY(-50%) scale(0.95) !important;
 }
 
 .search-bar input:focus {
@@ -91,6 +119,11 @@ body {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--primary);
   box-shadow: 0 0 0 4px rgba(255, 111, 30, 0.15);
+}
+
+.search-bar:focus-within .search-icon-wrapper {
+  color: var(--primary);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .nav-right {
@@ -126,6 +159,10 @@ body {
   background: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-primary);
+}
+
+.navbar button:active {
+  transform: translateY(0) scale(0.95);
 }
 
 .cart-icon {
@@ -249,6 +286,10 @@ body {
   box-shadow: var(--shadow-primary);
 }
 
+.product-card .add-btn:active {
+  transform: scale(0.95);
+}
+
 .popup-overlay {
   position: fixed;
   inset: 0;
@@ -329,6 +370,10 @@ body {
   background: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-primary-hover);
+}
+
+.popup-box .action-btn:active {
+  transform: translateY(0) scale(0.95);
 }
 
 .popup-box input {
@@ -505,6 +550,10 @@ body {
   box-shadow: var(--shadow-primary-hover);
 }
 
+.checkout-btn:active {
+  transform: translateY(0) scale(0.95);
+}
+
 /* React Toastify Vibe Overrides */
 .Toastify__toast {
   border-radius: 16px;
@@ -627,6 +676,10 @@ body {
   box-shadow: var(--shadow-primary);
 }
 
+.newsletter button:active {
+  transform: translateY(0) scale(0.95);
+}
+
 .footer-bottom {
   text-align: center;
   padding-top: 2rem;
@@ -656,10 +709,20 @@ body {
 }
 
 @media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
   .navbar {
     padding: 16px;
     flex-direction: column;
     gap: 16px;
+  }
+  
+  .navbar.hero-passed {
+    transform: translateY(-100%);
+    pointer-events: none;
+    opacity: 0;
   }
   
   .nav-left {
@@ -771,6 +834,10 @@ body {
   background: var(--primary-hover);
   transform: translateY(-4px);
   box-shadow: var(--shadow-primary-hover);
+}
+
+.hero-button:active {
+  transform: translateY(-2px) scale(0.95);
 }
 
 @media (max-width: 600px) {
@@ -960,6 +1027,10 @@ body {
   box-shadow: var(--shadow-primary-hover);
 }
 
+.deal-btn:active {
+  transform: translateY(-2px) scale(0.95);
+}
+
 @media (max-width: 900px) {
   .deal-container {
     flex-direction: column;
@@ -1013,5 +1084,11 @@ body {
     width: 100%;
     text-align: center;
     padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
   }
 }

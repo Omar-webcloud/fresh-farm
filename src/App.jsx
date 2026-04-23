@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ProductCard from "./components/ProductCard";
 import Popup from "./components/Popup";
 import CartPanel from "./components/CartPanel";
-import { FaShoppingCart, FaFacebook, FaTwitter, FaInstagram, FaSearch } from "react-icons/fa";
+import { FaShoppingCart, FaFacebook, FaTwitter, FaInstagram, FaSearch, FaTimes } from "react-icons/fa";
 import Hero from "./components/hero";
 import { DEMO_PRODUCTS } from "./data/products";
 import { bdPhone, publicImage } from "./utils/helpers";
@@ -30,10 +30,12 @@ export default function App() {
   const [pendingOtp, setPendingOtp] = useState(null);
   const [email, setEmail] = useState("");
   const [scrolled, setScrolled] = useState(false);
+  const [heroPassed, setHeroPassed] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      setHeroPassed(window.scrollY > window.innerHeight * 0.8);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -145,7 +147,7 @@ export default function App() {
 
   return (
     <div>
-      <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+      <header className={`navbar ${scrolled ? 'scrolled' : ''} ${heroPassed ? 'hero-passed' : ''}`}>
         <div className="nav-left">
           Fresh Farm
         </div>
@@ -159,6 +161,15 @@ export default function App() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          {searchQuery && (
+            <button 
+              className="clear-search-btn" 
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
         </div>
         <div className="nav-right">
           {user ? (
