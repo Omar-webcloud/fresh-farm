@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ProductCard from "./components/ProductCard";
 import Popup from "./components/Popup";
 import CartPanel from "./components/CartPanel";
-import { FaShoppingCart, FaFacebook, FaTwitter, FaInstagram, FaSearch, FaTimes } from "react-icons/fa";
+import { FaShoppingCart, FaFacebook, FaTwitter, FaInstagram, FaSearch, FaTimes, FaHome, FaUser, FaStore } from "react-icons/fa";
 import Hero from "./components/hero";
 import { DEMO_PRODUCTS } from "./data/products";
 import { bdPhone, publicImage } from "./utils/helpers";
@@ -31,6 +31,7 @@ export default function App() {
   const [email, setEmail] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const [heroPassed, setHeroPassed] = useState(false);
+  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +41,14 @@ export default function App() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (showSearchOverlay || showCart || (showPopup && typeof showPopup !== "string")) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [showSearchOverlay, showCart, showPopup]);
 
   useEffect(() => {
     sessionStorage.setItem("fresh_farm_cart", JSON.stringify(cart));
@@ -173,14 +182,17 @@ export default function App() {
         </div>
         <div className="nav-right">
           {user ? (
-            <>
-              <span>{user.phone}</span>
-              <button onClick={signOut}>Sign out</button>
-            </>
+            <button onClick={signOut} className="nav-btn-icon" aria-label="Sign out">
+              <FaUser />
+              <span className="nav-label">Sign out</span>
+            </button>
           ) : (
-            <button onClick={() => setShowPopup("auth")}>Sign in</button>
+            <button onClick={() => setShowPopup("auth")} className="nav-btn-icon" aria-label="Sign in">
+              <FaUser />
+              <span className="nav-label">Sign in</span>
+            </button>
           )}
-          <button onClick={() => setShowCart(true)} aria-label="Cart">
+          <button onClick={() => setShowCart(true)} aria-label="Cart" className="nav-btn-icon">
             <FaShoppingCart className="cart-icon" />
             <span className="cart-count">{cartItems.length}</span>
           </button>
@@ -267,6 +279,73 @@ export default function App() {
           onRemove={removeFromCart} 
           onCheckout={handleCheckout}
         />
+      )}
+
+      <nav className="mobile-bottom-nav">
+        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Home">
+          <FaHome />
+          <span>Home</span>
+        </button>
+        <button onClick={() => setShowSearchOverlay(true)} aria-label="Search">
+          <FaSearch />
+          <span>Search</span>
+        </button>
+        <a href="#products" aria-label="Products">
+          <FaStore />
+          <span>Shop</span>
+        </a>
+        <button onClick={() => setShowCart(true)} className="mobile-cart-btn" aria-label="Cart">
+          <div className="cart-badge-wrapper">
+            <FaShoppingCart />
+            {cartItems.length > 0 && <span className="mobile-badge">{cartItems.length}</span>}
+          </div>
+          <span>Cart</span>
+        </button>
+        <button onClick={() => user ? signOut() : setShowPopup("auth")} aria-label="Account">
+          <FaUser />
+          <span>{user ? "Sign Out" : "Account"}</span>
+        </button>
+      </nav>
+
+      {showSearchOverlay && (
+        <div className="search-overlay" onClick={() => setShowSearchOverlay(false)}>
+          <div className="search-overlay-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowSearchOverlay(false)}>
+              <FaTimes />
+            </button>
+            <h2>Search Products</h2>
+            <div className="search-bar overlay-search">
+              <div className="search-icon-wrapper">
+                <FaSearch />
+              </div>
+              <input 
+                autoFocus
+                type="text" 
+                placeholder="Type to search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button 
+                  className="clear-search-btn" 
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                >
+                  <FaTimes />
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <div className="search-results-hint">
+                Showing results for "{searchQuery}"...
+                <button className="view-results-btn" onClick={() => {
+                  setShowSearchOverlay(false);
+                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                }}>View Results</button>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       <ToastContainer
