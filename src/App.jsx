@@ -6,13 +6,12 @@ import { FaShoppingCart, FaFacebook, FaTwitter, FaInstagram } from "react-icons/
 import Hero from "./components/hero";
 import { DEMO_PRODUCTS } from "./data/products";
 import { bdPhone, publicImage } from "./utils/helpers";
-
-
-
 import DealOfTheDay from "./components/DealOfTheDay";
 
 export default function App() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(() => 
+    DEMO_PRODUCTS.map((p) => ({ ...p, image: publicImage(p.title) }))
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState({});
   const [user, setUser] = useState(null);
@@ -34,8 +33,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const demo = DEMO_PRODUCTS.map((p) => ({ ...p, image: publicImage(p.title) }));
-    setProducts(demo);
+    fetch('https://dummyjson.com/products/category/groceries?limit=100')
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.products
+          .filter(p => !p.title.toLowerCase().includes("soft drink"))
+          .map(p => ({
+            ...p,
+            image: p.thumbnail,
+            category: p.tags.includes('vegetables') ? 'Vegetables' : (p.tags.includes('fruits') ? 'Fruits' : 'Other')
+          }));
+        setProducts(prev => [...prev, ...mapped]);
+      });
   }, []);
 
   const sendOtp = () => {
@@ -77,7 +86,7 @@ export default function App() {
   };
 
   const cartItems = useMemo(() => Object.entries(cart).map(([id, qty]) => {
-    let product = products.find((p) => p.id === id);
+    let product = products.find((p) => String(p.id) === String(id));
     if (!product && id === "deal-1") {
        product = { 
           id: "deal-1", 
@@ -96,6 +105,7 @@ export default function App() {
 
   const vegetables = useMemo(() => filteredProducts.filter(p => p.category === 'Vegetables'), [filteredProducts]);
   const fruits = useMemo(() => filteredProducts.filter(p => p.category === 'Fruits'), [filteredProducts]);
+  const others = useMemo(() => filteredProducts.filter(p => p.category === 'Other'), [filteredProducts]);
 
   return (
     <div>
@@ -131,23 +141,38 @@ export default function App() {
       <DealOfTheDay onAddToCart={addToCart} />
 
       <main id="products" className="products-section">
-        <div className="category-section">
-          <h2 className="category-header">Vegetables</h2>
-          <div className="product-grid">
-            {vegetables.map((p) => (
-              <ProductCard key={p.id} product={p} onClick={() => setShowPopup(p)} />
-            ))}
+        {vegetables.length > 0 && (
+          <div className="category-section">
+            <h2 className="category-header">Vegetables</h2>
+            <div className="product-grid">
+              {vegetables.map((p) => (
+                <ProductCard key={p.id} product={p} onClick={() => setShowPopup(p)} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="category-section">
-          <h2 className="category-header">Fruits</h2>
-          <div className="product-grid">
-            {fruits.map((p) => (
-              <ProductCard key={p.id} product={p} onClick={() => setShowPopup(p)} />
-            ))}
+        {fruits.length > 0 && (
+          <div className="category-section">
+            <h2 className="category-header">Fruits</h2>
+            <div className="product-grid">
+              {fruits.map((p) => (
+                <ProductCard key={p.id} product={p} onClick={() => setShowPopup(p)} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {others.length > 0 && (
+          <div className="category-section">
+            <h2 className="category-header">Other Groceries</h2>
+            <div className="product-grid">
+              {others.map((p) => (
+                <ProductCard key={p.id} product={p} onClick={() => setShowPopup(p)} />
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       {showPopup && typeof showPopup !== "string" && (
@@ -220,3 +245,4 @@ export default function App() {
     </div>
   );
 }
+
