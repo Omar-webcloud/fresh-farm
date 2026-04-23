@@ -1,10 +1,13 @@
 import React from "react";
+import { FaTimes } from "react-icons/fa";
 
 export default function Popup({ product, children, onClose, onAddToCart }) {
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-box" onClick={(e) => e.stopPropagation()}>
-        <button className="close-btn" onClick={onClose}>✖</button>
+        <button className="close-btn" onClick={onClose} aria-label="Close popup">
+          <FaTimes />
+        </button>
         {product && (
           <>
             <img src={product.image} alt={product.title} />

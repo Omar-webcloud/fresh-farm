@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function ProductCard({ product, onClick }) {
+export default function ProductCard({ product, onClick, onAddToCart }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
@@ -13,7 +13,16 @@ export default function ProductCard({ product, onClick }) {
         className={imageLoaded ? "lazy-loaded" : ""}
       />
       <h3>{product.title}</h3>
-      <p>${product.price}</p>
+      <p>${product.price.toFixed(2)}</p>
+      <button 
+        className="add-btn" 
+        onClick={(e) => {
+          e.stopPropagation();
+          onAddToCart(product);
+        }}
+      >
+        Add to Cart
+      </button>
     </div>
   );
 }

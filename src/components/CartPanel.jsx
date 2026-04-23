@@ -1,12 +1,15 @@
 import React from "react";
+import { FaTimes } from "react-icons/fa";
 
 export default function CartPanel({ cartItems, onClose, onRemove }) {
   const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
   return (
     <div className="cart-panel">
       <div className="cart-header">
-        <h2>Cart</h2>
-        <button className="close-btn" onClick={onClose}>✖</button>
+        <h2>Your Cart</h2>
+        <button className="close-btn" onClick={onClose} aria-label="Close cart">
+          <FaTimes />
+        </button>
       </div>
       {cartItems.length === 0 ? (
         <p>Cart is empty.</p>
@@ -23,7 +26,13 @@ export default function CartPanel({ cartItems, onClose, onRemove }) {
           </div>
         ))
       )}
-      <div>Total: ${total.toFixed(2)}</div>
+      <div className="cart-footer">
+        <div className="cart-total">
+          <span>Total:</span>
+          <span>${total.toFixed(2)}</span>
+        </div>
+        <button className="checkout-btn">Checkout Now</button>
+      </div>
     </div>
   );
 }
