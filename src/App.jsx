@@ -47,14 +47,37 @@ export default function App() {
   const [theme, setTheme] = useState(() => sessionStorage.getItem("fresh_theme") || "dark");
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
 
-  const categoryItems = [
-    { title: "Fruits", image: "/apple.jpg" },
-    { title: "Vegetables", image: "/broccoli.jpg" },
-    { title: "Grocery & Staples", image: "/tomato.jpg" },
-    { title: "Dairy & Eggs", image: "/banana.jpg" },
-    { title: "Beverages", image: "/orange.jpg" },
-    { title: "Snacks", image: "/mango.jpg" }
-  ];
+  const categoryItems = useMemo(() => {
+    const categories = [
+      { title: "Fruits", image: "/apple.jpg", fixed: true },
+      { title: "Vegetables", image: "/broccoli.jpg", fixed: true },
+      { title: "Groceries", default: "/tomato.jpg" },
+      { title: "Dairy & Eggs", default: "/banana.jpg" },
+      { title: "Beverages", default: "/orange.jpg" },
+      { title: "Snacks", default: "/mango.jpg" },
+      { title: "Meat & Fish", default: "/pumpkin.jpg" },
+      { title: "Personal Care", default: "/apple.jpg" },
+      { title: "Home & Kitchen", default: "/tomato.jpg" }
+    ];
+
+    return categories.map(cat => {
+      if (cat.fixed) return { title: cat.title, image: cat.image };
+      
+      const product = products.find(p => {
+        if (p.category !== cat.title) return false;
+        if (p.image && p.image.startsWith("/")) return false;
+        if (cat.title === "Snacks") {
+          return p.title.toLowerCase().includes("chips") || p.title.toLowerCase().includes("crisps");
+        }
+        return true;
+      });
+      
+      return {
+        title: cat.title,
+        image: product ? product.image : cat.default
+      };
+    });
+  }, [products]);
 
   const serviceHighlights = [
     { icon: <FaTruck />, title: "Free Delivery", text: "On orders above ৳499" },
@@ -86,10 +109,12 @@ export default function App() {
 
   useEffect(() => {
     const endpoints = [
-      "https://dummyjson.com/products?limit=120",
-      "https://dummyjson.com/products/category/groceries?limit=120",
-      "https://dummyjson.com/products/category/fruits?limit=120",
-      "https://dummyjson.com/products/category/vegetables?limit=120",
+      "https://dummyjson.com/products/category/groceries?limit=100",
+      "https://dummyjson.com/products/category/beauty?limit=100",
+      "https://dummyjson.com/products/category/skin-care?limit=100",
+      "https://dummyjson.com/products/category/kitchen-accessories?limit=100",
+      "https://dummyjson.com/products/category/snacks?limit=100",
+      "https://dummyjson.com/products?limit=194",
     ];
 
     Promise.all(endpoints.map((url) => fetch(url).then((res) => res.json())))
@@ -99,12 +124,18 @@ export default function App() {
         const mapped = allApiProducts
           .filter((p) => p?.title && !p.title.toLowerCase().includes("soft drink"))
           .map((p) => {
-            const normalizedCategory =
-              p.category === "vegetables" || p.tags?.includes("vegetables")
-                ? "Vegetables"
-                : p.category === "fruits" || p.tags?.includes("fruits")
-                ? "Fruits"
-                : "Other";
+            const cat = p.category?.toLowerCase() || "";
+            const tags = p.tags?.map(t => t.toLowerCase()) || [];
+            
+            let normalizedCategory = "Groceries";
+            if (cat === "vegetables" || tags.includes("vegetables")) normalizedCategory = "Vegetables";
+            else if (cat === "fruits" || tags.includes("fruits")) normalizedCategory = "Fruits";
+            else if (cat === "meat" || tags.includes("meat")) normalizedCategory = "Meat & Fish";
+            else if (cat === "dairy" || tags.includes("dairy")) normalizedCategory = "Dairy & Eggs";
+            else if (cat === "beverages" || tags.includes("beverages")) normalizedCategory = "Beverages";
+            else if (cat === "snacks" || tags.includes("snacks")) normalizedCategory = "Snacks";
+            else if (cat === "beauty" || cat === "skin-care") normalizedCategory = "Personal Care";
+            else if (cat === "kitchen-accessories") normalizedCategory = "Home & Kitchen";
 
             return {
               ...p,
@@ -206,7 +237,7 @@ export default function App() {
     return products.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [products, searchQuery]);
 
-  const bestSellers = useMemo(() => filteredProducts.slice(0, 6), [filteredProducts]);
+  const bestSellers = useMemo(() => filteredProducts.slice(0, 24), [filteredProducts]);
 
   return (
     <div className="app-shell">
