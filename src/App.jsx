@@ -4,11 +4,26 @@ import 'react-toastify/dist/ReactToastify.css';
 import ProductCard from "./components/ProductCard";
 import Popup from "./components/Popup";
 import CartPanel from "./components/CartPanel";
-import { FaShoppingCart, FaFacebook, FaTwitter, FaInstagram, FaSearch, FaTimes, FaHome, FaUser, FaStore } from "react-icons/fa";
-import Hero from "./components/hero";
+import {
+  FaShoppingCart,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+  FaSearch,
+  FaTimes,
+  FaUser,
+  FaMapMarkerAlt,
+  FaMoon,
+  FaSun,
+  FaTruck,
+  FaBolt,
+  FaShieldAlt,
+  FaUndoAlt,
+  FaHeart,
+  FaArrowRight
+} from "react-icons/fa";
 import { DEMO_PRODUCTS } from "./data/products";
 import { bdPhone, publicImage } from "./utils/helpers";
-import DealOfTheDay from "./components/DealOfTheDay";
 
 export default function App() {
   const [products, setProducts] = useState(() => 
@@ -29,18 +44,24 @@ export default function App() {
   const [otpInput, setOtpInput] = useState("");
   const [pendingOtp, setPendingOtp] = useState(null);
   const [email, setEmail] = useState("");
-  const [scrolled, setScrolled] = useState(false);
-  const [heroPassed, setHeroPassed] = useState(false);
+  const [theme, setTheme] = useState(() => sessionStorage.getItem("fresh_theme") || "dark");
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-      setHeroPassed(window.scrollY > window.innerHeight * 0.8);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const categoryItems = [
+    { title: "Fruits", image: "/apple.jpg" },
+    { title: "Vegetables", image: "/broccoli.jpg" },
+    { title: "Grocery & Staples", image: "/tomato.jpg" },
+    { title: "Dairy & Eggs", image: "/banana.jpg" },
+    { title: "Beverages", image: "/orange.jpg" },
+    { title: "Snacks", image: "/mango.jpg" }
+  ];
+
+  const serviceHighlights = [
+    { icon: <FaTruck />, title: "Free Delivery", text: "On orders above ৳499" },
+    { icon: <FaBolt />, title: "Express Delivery", text: "In 60 minutes" },
+    { icon: <FaShieldAlt />, title: "Best Quality", text: "Sourced with care" },
+    { icon: <FaUndoAlt />, title: "Easy Returns", text: "No questions asked" }
+  ];
 
   useEffect(() => {
     if (showSearchOverlay || showCart || (showPopup && typeof showPopup !== "string")) {
@@ -59,17 +80,52 @@ export default function App() {
   }, [user]);
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products/category/groceries?limit=100')
-      .then(res => res.json())
-      .then(data => {
-        const mapped = data.products
-          .filter(p => !p.title.toLowerCase().includes("soft drink"))
-          .map(p => ({
-            ...p,
-            image: p.thumbnail,
-            category: p.tags.includes('vegetables') ? 'Vegetables' : (p.tags.includes('fruits') ? 'Fruits' : 'Other')
-          }));
-        setProducts(prev => [...prev, ...mapped]);
+    document.documentElement.setAttribute("data-theme", theme);
+    sessionStorage.setItem("fresh_theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const endpoints = [
+      "https://dummyjson.com/products?limit=120",
+      "https://dummyjson.com/products/category/groceries?limit=120",
+      "https://dummyjson.com/products/category/fruits?limit=120",
+      "https://dummyjson.com/products/category/vegetables?limit=120",
+    ];
+
+    Promise.all(endpoints.map((url) => fetch(url).then((res) => res.json())))
+      .then((responses) => {
+        const allApiProducts = responses.flatMap((data) => data.products || []);
+
+        const mapped = allApiProducts
+          .filter((p) => p?.title && !p.title.toLowerCase().includes("soft drink"))
+          .map((p) => {
+            const normalizedCategory =
+              p.category === "vegetables" || p.tags?.includes("vegetables")
+                ? "Vegetables"
+                : p.category === "fruits" || p.tags?.includes("fruits")
+                ? "Fruits"
+                : "Other";
+
+            return {
+              ...p,
+              image: p.thumbnail || p.images?.[0] || "/fruit-bowl.png",
+              category: normalizedCategory,
+            };
+          });
+
+        setProducts((prev) => {
+          const merged = [...prev, ...mapped];
+          const seen = new Set();
+          return merged.filter((item) => {
+            const key = String(item.id);
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+        });
+      })
+      .catch(() => {
+        toast.warning("Could not load extra products. Showing available items.");
       });
   }, []);
 
@@ -150,23 +206,20 @@ export default function App() {
     return products.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [products, searchQuery]);
 
-  const vegetables = useMemo(() => filteredProducts.filter(p => p.category === 'Vegetables'), [filteredProducts]);
-  const fruits = useMemo(() => filteredProducts.filter(p => p.category === 'Fruits'), [filteredProducts]);
-  const others = useMemo(() => filteredProducts.filter(p => p.category === 'Other'), [filteredProducts]);
+  const bestSellers = useMemo(() => filteredProducts.slice(0, 6), [filteredProducts]);
 
   return (
-    <div>
-      <header className={`navbar ${scrolled ? 'scrolled' : ''} ${heroPassed ? 'hero-passed' : ''}`}>
-        <div className="nav-left">
-          Fresh Farm
-        </div>
+    <div className="app-shell">
+      <div className="top-strip">Free delivery on orders above ৳499</div>
+      <header className="navbar">
+        <div className="brand">FreshBasket</div>
         <div className="search-bar">
           <div className="search-icon-wrapper">
             <FaSearch />
           </div>
           <input 
             type="text" 
-            placeholder="Search for fresh produce..."
+            placeholder="Search for fruits, vegetables, groceries..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -180,16 +233,27 @@ export default function App() {
             </button>
           )}
         </div>
+        <button className="location-chip" aria-label="Location">
+          <FaMapMarkerAlt />
+          <span>Chattogram, 4000</span>
+        </button>
         <div className="nav-right">
+          <button
+            className="nav-btn-icon"
+            onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? <FaSun /> : <FaMoon />}
+          </button>
           {user ? (
             <button onClick={signOut} className="nav-btn-icon" aria-label="Sign out">
               <FaUser />
-              <span className="nav-label">Sign out</span>
+              <span className="nav-label">Account</span>
             </button>
           ) : (
             <button onClick={() => setShowPopup("auth")} className="nav-btn-icon" aria-label="Sign in">
               <FaUser />
-              <span className="nav-label">Sign in</span>
+              <span className="nav-label">Account</span>
             </button>
           )}
           <button onClick={() => setShowCart(true)} aria-label="Cart" className="nav-btn-icon">
@@ -199,57 +263,105 @@ export default function App() {
         </div>
       </header>
 
-      <Hero />
-      <DealOfTheDay onAddToCart={addToCart} />
-
-      <main id="products" className="products-section">
-        {vegetables.length > 0 && (
-          <div className="category-section">
-            <h2 className="category-header">Vegetables</h2>
-            <div className="product-grid">
-              {vegetables.map((p) => (
-                <ProductCard 
-                  key={p.id} 
-                  product={p} 
-                  onClick={() => setShowPopup(p)} 
-                  onAddToCart={addToCart} 
-                />
-              ))}
+      <main className="page-wrap">
+        <section className="hero-card">
+          <div className="hero-copy">
+            <span className="tiny-pill">Eat fresh, live healthy</span>
+            <h1>Freshness you can <span>trust</span></h1>
+            <p>Handpicked fruits, vegetables and groceries delivered fresh to your home.</p>
+            <div className="hero-actions">
+              <a href="#products" className="hero-button">Shop Now</a>
+              <button className="ghost-btn">See how it works</button>
             </div>
           </div>
-        )}
-
-        {fruits.length > 0 && (
-          <div className="category-section">
-            <h2 className="category-header">Fruits</h2>
-            <div className="product-grid">
-              {fruits.map((p) => (
-                <ProductCard 
-                  key={p.id} 
-                  product={p} 
-                  onClick={() => setShowPopup(p)} 
-                  onAddToCart={addToCart} 
-                />
-              ))}
+          <div className="hero-visual-wrap">
+            <img className="hero-visual" src="/fruit-bowl.png" alt="Fresh vegetables and fruits" />
+            <div className="today-picks">
+              <p>Today's Fresh Picks</p>
+              <div className="pick-row">
+                <img src="/orange.jpg" alt="Orange" />
+                <img src="/grapes.jpg" alt="Grapes" />
+                <img src="/spinach.jpg" alt="Spinach" />
+                <img src="/tomato.jpg" alt="Tomato" />
+              </div>
             </div>
           </div>
-        )}
+        </section>
 
-        {others.length > 0 && (
-          <div className="category-section">
-            <h2 className="category-header">Other Groceries</h2>
-            <div className="product-grid">
-              {others.map((p) => (
-                <ProductCard 
-                  key={p.id} 
-                  product={p} 
-                  onClick={() => setShowPopup(p)} 
-                  onAddToCart={addToCart} 
-                />
-              ))}
+        <section className="service-grid">
+          {serviceHighlights.map((item) => (
+            <div className="service-card" key={item.title}>
+              <div className="service-icon">{item.icon}</div>
+              <div>
+                <h4>{item.title}</h4>
+                <p>{item.text}</p>
+              </div>
             </div>
+          ))}
+        </section>
+
+        <section className="category-strip">
+          <div className="section-head">
+            <h2>Shop by Category</h2>
+            <a href="#products">View all</a>
           </div>
-        )}
+          <div className="category-row">
+            {categoryItems.map((item) => (
+              <article className="category-card" key={item.title}>
+                <img src={item.image} alt={item.title} />
+                <h3>{item.title}</h3>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="products" className="products-section">
+          <div className="section-head">
+            <h2>Best Sellers</h2>
+            <a href="#products">View all</a>
+          </div>
+          <div className="product-grid">
+            {bestSellers.map((p) => (
+              <div className="product-shell" key={p.id}>
+                <button className="fav-btn" aria-label="Wishlist">
+                  <FaHeart />
+                </button>
+                <ProductCard
+                  product={p}
+                  onClick={() => setShowPopup(p)}
+                  onAddToCart={addToCart}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="offer-grid">
+          <article className="offer-card">
+            <div>
+              <h3>Flat 20% Off</h3>
+              <p>On your first order</p>
+              <button>Shop Now <FaArrowRight /></button>
+            </div>
+            <img src="/fruit-bowl.png" alt="Offer basket" />
+          </article>
+          <article className="offer-card">
+            <div>
+              <h3>Super Savings</h3>
+              <p>On groceries & staples</p>
+              <button>Shop Now <FaArrowRight /></button>
+            </div>
+            <img src="/pumpkin.jpg" alt="Savings" />
+          </article>
+          <article className="offer-card">
+            <div>
+              <h3>Up to 30% Off</h3>
+              <p>On personal care</p>
+              <button>Shop Now <FaArrowRight /></button>
+            </div>
+            <img src="/banana.jpg" alt="Personal care offer" />
+          </article>
+        </section>
       </main>
 
       {showPopup && typeof showPopup !== "string" && (
@@ -280,32 +392,6 @@ export default function App() {
           onCheckout={handleCheckout}
         />
       )}
-
-      <nav className="mobile-bottom-nav">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Home">
-          <FaHome />
-          <span>Home</span>
-        </button>
-        <button onClick={() => setShowSearchOverlay(true)} aria-label="Search">
-          <FaSearch />
-          <span>Search</span>
-        </button>
-        <a href="#products" aria-label="Products">
-          <FaStore />
-          <span>Shop</span>
-        </a>
-        <button onClick={() => setShowCart(true)} className="mobile-cart-btn" aria-label="Cart">
-          <div className="cart-badge-wrapper">
-            <FaShoppingCart />
-            {cartItems.length > 0 && <span className="mobile-badge">{cartItems.length}</span>}
-          </div>
-          <span>Cart</span>
-        </button>
-        <button onClick={() => user ? signOut() : setShowPopup("auth")} aria-label="Account">
-          <FaUser />
-          <span>{user ? "Sign Out" : "Account"}</span>
-        </button>
-      </nav>
 
       {showSearchOverlay && (
         <div className="search-overlay" onClick={() => setShowSearchOverlay(false)}>
@@ -364,20 +450,20 @@ export default function App() {
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-section about">
-            <h3>About Fresh Farm</h3>
-            <p>Your one-stop shop for the freshest produce, delivered straight from the farm to your table. We are committed to providing you with the highest quality, locally sourced products.</p>
+            <h3>FreshBasket</h3>
+            <p>Fresh fruits, vegetables and groceries delivered fresh to your home.</p>
           </div>
           <div className="footer-section links">
-            <h3>Quick Links</h3>
+            <h3>Shop</h3>
             <ul>
-              <li><a href="#products">Products</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Contact Us</a></li>
-              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Fruits</a></li>
+              <li><a href="#">Vegetables</a></li>
+              <li><a href="#">Groceries</a></li>
+              <li><a href="#">View all</a></li>
             </ul>
           </div>
           <div className="footer-section social">
-            <h3>Follow Us</h3>
+            <h3>Help & Support</h3>
             <div className="social-icons">
               <a href="#"><FaFacebook /></a>
               <a href="#"><FaTwitter /></a>
@@ -385,8 +471,8 @@ export default function App() {
             </div>
           </div>
           <div className="footer-section newsletter">
-            <h3>Stay Updated</h3>
-            <p>Subscribe to our newsletter for the latest updates and offers.</p>
+            <h3>Stay updated with offers</h3>
+            <p>Get the best deals and updates delivered to your inbox.</p>
             <form onSubmit={handleNewsletterSubmit}>
               <input 
                 type="email" 
@@ -399,7 +485,7 @@ export default function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 Omar. All Rights Reserved.</p>
+          <p>&copy; 2026 FreshBasket. All rights reserved.</p>
         </div>
       </footer>
     </div>

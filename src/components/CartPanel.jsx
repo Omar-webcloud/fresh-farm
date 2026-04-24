@@ -3,6 +3,7 @@ import { FaTimes } from "react-icons/fa";
 
 export default function CartPanel({ cartItems, onClose, onRemove, onCheckout }) {
   const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const bdtTotal = Math.round(total * 122);
   return (
     <div className="cart-panel">
       <div className="cart-header">
@@ -20,7 +21,7 @@ export default function CartPanel({ cartItems, onClose, onRemove, onCheckout }) 
             <div>
               <h4>{item.title}</h4>
               <p>Qty: {item.quantity}</p>
-              <p>${item.price}</p>
+              <p>৳{Math.round(item.price * 122)}</p>
             </div>
             <button onClick={() => onRemove(item.id)}>Remove</button>
           </div>
@@ -29,7 +30,7 @@ export default function CartPanel({ cartItems, onClose, onRemove, onCheckout }) 
       <div className="cart-footer">
         <div className="cart-total">
           <span>Total:</span>
-          <span>${total.toFixed(2)}</span>
+          <span>৳{bdtTotal}</span>
         </div>
         <button className="checkout-btn" onClick={onCheckout}>Checkout Now</button>
       </div>

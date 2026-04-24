@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 export default function ProductCard({ product, onClick, onAddToCart }) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const bdtPrice = Math.round(product.price * 122);
 
   return (
     <div className="product-card" onClick={() => onClick(product)}>
@@ -13,7 +14,7 @@ export default function ProductCard({ product, onClick, onAddToCart }) {
         className={imageLoaded ? "lazy-loaded" : ""}
       />
       <h3>{product.title}</h3>
-      <p>${product.price.toFixed(2)}</p>
+      <p>৳{bdtPrice}</p>
       <button 
         className="add-btn" 
         onClick={(e) => {
