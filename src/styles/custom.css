@@ -383,11 +383,13 @@ body {
 .newsletter button { border: none; border-radius: 10px; background: var(--brand); color: #fff; padding: 10px 12px; }
 .footer-bottom { text-align: center; color: var(--text-muted); font-size: 13px; padding-top: 12px; }
 
+.loader-container { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 0; gap: 16px; color: var(--text-muted); }
+.loader-spinner { width: 42px; height: 42px; border: 3px solid var(--border); border-top-color: var(--brand); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 0; color: var(--text-muted); font-size: 18px; }
+
 @media (max-width: 1100px) {
-  .navbar {
-    grid-template-columns: 1fr;
-    top: 0;
-  }
+  .navbar { grid-template-columns: 1fr; top: 0; }
   .hero-card { grid-template-columns: 1fr; }
   .service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .category-row, .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }

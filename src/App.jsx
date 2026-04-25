@@ -47,6 +47,7 @@ export default function App() {
   const [theme, setTheme] = useState(() => sessionStorage.getItem("fresh_theme") || "dark");
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const categoryItems = useMemo(() => {
     const categories = [
@@ -109,6 +110,7 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
+    setIsLoading(true);
     const endpoints = [
       "https://dummyjson.com/products/category/groceries?limit=100",
       "https://dummyjson.com/products/category/beauty?limit=100",
@@ -163,6 +165,9 @@ export default function App() {
       })
       .catch(() => {
         toast.warning("Could not load extra products. Showing available items.");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -256,7 +261,7 @@ export default function App() {
       <div className="top-strip">Free delivery on orders above ৳499</div>
       <header className="navbar">
         <div className="brand">
-          <img src="/logo.png" alt="FreshFarm Logo" className="logo-img" />
+          <img src="/logo.png" alt="FreshFarm Logo" className="logo-img" loading="lazy" />
           <span>FreshFarm</span>
         </div>
         <div className="search-bar">
@@ -321,14 +326,14 @@ export default function App() {
             </div>
           </div>
           <div className="hero-visual-wrap">
-            <img className="hero-visual" src="/fruit-bowl.png" alt="Fresh vegetables and fruits" />
+            <img className="hero-visual" src="/fruit-bowl.png" alt="Fresh vegetables and fruits" loading="lazy" />
             <div className="today-picks">
               <p>Today's Fresh Picks</p>
               <div className="pick-row">
-                <img src="/orange.jpg" alt="Orange" />
-                <img src="/grapes.jpg" alt="Grapes" />
-                <img src="/spinach.jpg" alt="Spinach" />
-                <img src="/tomato.jpg" alt="Tomato" />
+                <img src="/orange.jpg" alt="Orange" loading="lazy" />
+                <img src="/grapes.jpg" alt="Grapes" loading="lazy" />
+                <img src="/spinach.jpg" alt="Spinach" loading="lazy" />
+                <img src="/tomato.jpg" alt="Tomato" loading="lazy" />
               </div>
             </div>
           </div>
@@ -361,7 +366,7 @@ export default function App() {
                   document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
-                <img src={item.image} alt={item.title} />
+                <img src={item.image} alt={item.title} loading="lazy" />
                 <h3>{item.title}</h3>
               </article>
             ))}
@@ -376,18 +381,27 @@ export default function App() {
             )}
           </div>
           <div className="product-grid">
-            {bestSellers.map((p) => (
-              <div className="product-shell" key={p.id}>
-                <button className="fav-btn" aria-label="Wishlist">
-                  <FaHeart />
-                </button>
-                <ProductCard
-                  product={p}
-                  onClick={() => setShowPopup(p)}
-                  onAddToCart={addToCart}
-                />
+            {isLoading ? (
+              <div className="loader-container">
+                <div className="loader-spinner"></div>
+                <p>Fetching fresh items...</p>
               </div>
-            ))}
+            ) : bestSellers.length > 0 ? (
+              bestSellers.map((p) => (
+                <div className="product-shell" key={p.id}>
+                  <button className="fav-btn" aria-label="Wishlist">
+                    <FaHeart />
+                  </button>
+                  <ProductCard
+                    product={p}
+                    onClick={() => setShowPopup(p)}
+                    onAddToCart={addToCart}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="empty-state">No products found matching your criteria.</div>
+            )}
           </div>
         </section>
 
@@ -398,7 +412,7 @@ export default function App() {
               <p>On your first order</p>
               <button>Shop Now <FaArrowRight /></button>
             </div>
-            <img src="/fruit-bowl.png" alt="Offer basket" />
+            <img src="/fruit-bowl.png" alt="Offer basket" loading="lazy" />
           </article>
           <article className="offer-card">
             <div>
@@ -406,7 +420,7 @@ export default function App() {
               <p>On groceries & staples</p>
               <button>Shop Now <FaArrowRight /></button>
             </div>
-            <img src="/pumpkin.jpg" alt="Savings" />
+            <img src="/pumpkin.jpg" alt="Savings" loading="lazy" />
           </article>
           <article className="offer-card">
             <div>
@@ -414,7 +428,7 @@ export default function App() {
               <p>On personal care</p>
               <button>Shop Now <FaArrowRight /></button>
             </div>
-            <img src="/banana.jpg" alt="Personal care offer" />
+            <img src="/banana.jpg" alt="Personal care offer" loading="lazy" />
           </article>
         </section>
       </main>
@@ -506,7 +520,7 @@ export default function App() {
         <div className="footer-container">
           <div className="footer-section about">
             <h3>
-              <img src="/logo.png" alt="FreshFarm Logo" className="logo-img" />
+              <img src="/logo.png" alt="FreshFarm Logo" className="logo-img" loading="lazy" />
               FreshFarm
             </h3>
             <p>Fresh fruits, vegetables and groceries delivered fresh to your home.</p>

@@ -12,7 +12,7 @@ export default function Popup({ product, children, onClose, onAddToCart }) {
         </button>
         {product && (
           <>
-            <img src={product.image} alt={product.title} />
+            <img src={product.image} alt={product.title} loading="lazy" />
             <h2>{product.title}</h2>
             <p>{product.description}</p>
             <p>৳{bdtPrice}</p>

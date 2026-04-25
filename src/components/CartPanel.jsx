@@ -17,7 +17,7 @@ export default function CartPanel({ cartItems, onClose, onRemove, onCheckout }) 
       ) : (
         cartItems.map((item) => (
           <div key={item.id} className="cart-item">
-            <img src={item.image} alt={item.title} />
+            <img src={item.image} alt={item.title} loading="lazy" />
             <div>
               <h4>{item.title}</h4>
               <p>Qty: {item.quantity}</p>
