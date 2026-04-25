@@ -1,6 +1,6 @@
-# Fresh Farm
+# FreshFarm
 
-Fresh Farm is a web-based platform designed to streamline the process of buying and selling fresh produce. The application provides users with a clean, user-friendly interface to browse, order, and manage fresh farm products. It supports both farmers and customers, allowing for easy transactions and order management.
+FreshFarm is a web-based platform designed to streamline the process of buying and selling fresh produce. The application provides users with a clean, user-friendly interface to browse, order, and manage fresh farm products. It supports both farmers and customers, allowing for easy transactions and order management.
 
 ## Features
 

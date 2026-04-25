@@ -31,11 +31,11 @@ export default function App() {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState(() => {
-    const savedCart = sessionStorage.getItem("fresh_farm_cart");
+    const savedCart = sessionStorage.getItem("freshfarm_cart");
     return savedCart ? JSON.parse(savedCart) : {};
   });
   const [user, setUser] = useState(() => {
-    const savedUser = sessionStorage.getItem("fresh_farm_user");
+    const savedUser = sessionStorage.getItem("freshfarm_user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
   const [showPopup, setShowPopup] = useState(null);
@@ -95,11 +95,11 @@ export default function App() {
   }, [showSearchOverlay, showCart, showPopup]);
 
   useEffect(() => {
-    sessionStorage.setItem("fresh_farm_cart", JSON.stringify(cart));
+    sessionStorage.setItem("freshfarm_cart", JSON.stringify(cart));
   }, [cart]);
 
   useEffect(() => {
-    sessionStorage.setItem("fresh_farm_user", JSON.stringify(user));
+    sessionStorage.setItem("freshfarm_user", JSON.stringify(user));
   }, [user]);
 
   useEffect(() => {
@@ -179,8 +179,8 @@ export default function App() {
   const signOut = () => { 
     setUser(null); 
     setCart({}); 
-    sessionStorage.removeItem("fresh_farm_user");
-    sessionStorage.removeItem("fresh_farm_cart");
+    sessionStorage.removeItem("freshfarm_user");
+    sessionStorage.removeItem("freshfarm_cart");
   };
 
   const addToCart = (product) => {
@@ -243,7 +243,7 @@ export default function App() {
     <div className="app-shell">
       <div className="top-strip">Free delivery on orders above ৳499</div>
       <header className="navbar">
-        <div className="brand">FreshBasket</div>
+        <div className="brand">FreshFarm</div>
         <div className="search-bar">
           <div className="search-icon-wrapper">
             <FaSearch />
@@ -481,7 +481,7 @@ export default function App() {
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-section about">
-            <h3>FreshBasket</h3>
+            <h3>FreshFarm</h3>
             <p>Fresh fruits, vegetables and groceries delivered fresh to your home.</p>
           </div>
           <div className="footer-section links">
@@ -516,7 +516,7 @@ export default function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 FreshBasket. All rights reserved.</p>
+          <p>&copy; 2026 FreshFarm. All rights reserved.</p>
         </div>
       </footer>
     </div>

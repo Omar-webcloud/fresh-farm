@@ -5,7 +5,7 @@ function Hero() {
     <div className="hero-container" style={{ backgroundImage: "url('/hero.jpg')" }}>
       <div className="hero-overlay"></div>
       <div className="hero-content">
-        <h1>Welcome to <span>Fresh Farm</span></h1>
+        <h1>Welcome to <span>FreshFarm</span></h1>
         <p>Your one-stop shop for the freshest produce, delivered straight from the farm to your table.</p>
         <a href="#products" className="hero-button">
           Shop Now
