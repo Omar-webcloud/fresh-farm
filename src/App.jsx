@@ -27,7 +27,7 @@ import { bdPhone, publicImage } from "./utils/helpers";
 
 export default function App() {
   const [products, setProducts] = useState(() => 
-    DEMO_PRODUCTS.map((p) => ({ ...p, image: publicImage(p.title) }))
+    DEMO_PRODUCTS.map((p) => ({ ...p, image: p.image || publicImage(p.title) }))
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState(() => {
@@ -46,6 +46,7 @@ export default function App() {
   const [email, setEmail] = useState("");
   const [theme, setTheme] = useState(() => sessionStorage.getItem("fresh_theme") || "dark");
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const categoryItems = useMemo(() => {
     const categories = [
@@ -54,7 +55,7 @@ export default function App() {
       { title: "Groceries", default: "/tomato.jpg" },
       { title: "Dairy & Eggs", default: "/banana.jpg" },
       { title: "Beverages", default: "/orange.jpg" },
-      { title: "Snacks", image: "/snacks.png", fixed: true },
+      { title: "Snacks", image: "/snacks_new.png", fixed: true },
       { title: "Meat & Fish", default: "/pumpkin.jpg" },
       { title: "Personal Care", default: "/apple.jpg" },
       { title: "Home & Kitchen", default: "/tomato.jpg" }
@@ -114,12 +115,17 @@ export default function App() {
       "https://dummyjson.com/products/category/skin-care?limit=100",
       "https://dummyjson.com/products/category/kitchen-accessories?limit=100",
       "https://dummyjson.com/products/category/snacks?limit=100",
+      "https://dummyjson.com/products/search?q=chips&limit=50",
+      "https://dummyjson.com/products/search?q=chocolate&limit=50",
+      "https://dummyjson.com/products/search?q=biscuits&limit=50",
       "https://dummyjson.com/products?limit=194",
     ];
 
-    Promise.all(endpoints.map((url) => fetch(url).then((res) => res.json())))
-      .then((responses) => {
-        const allApiProducts = responses.flatMap((data) => data.products || []);
+    Promise.allSettled(endpoints.map((url) => fetch(url).then((res) => res.json())))
+      .then((results) => {
+        const allApiProducts = results
+          .filter((res) => res.status === "fulfilled")
+          .flatMap((res) => res.value.products || []);
 
         const mapped = allApiProducts
           .filter((p) => p?.title && !p.title.toLowerCase().includes("soft drink"))
@@ -133,9 +139,9 @@ export default function App() {
             else if (cat === "meat" || tags.includes("meat")) normalizedCategory = "Meat & Fish";
             else if (cat === "dairy" || tags.includes("dairy")) normalizedCategory = "Dairy & Eggs";
             else if (cat === "beverages" || tags.includes("beverages")) normalizedCategory = "Beverages";
-            else if (cat === "snacks" || tags.includes("snacks")) normalizedCategory = "Snacks";
-            else if (cat === "beauty" || cat === "skin-care") normalizedCategory = "Personal Care";
-            else if (cat === "kitchen-accessories") normalizedCategory = "Home & Kitchen";
+            else if (cat.includes("snacks") || cat.includes("confectionery") || tags.includes("snacks") || p.title.toLowerCase().includes("chips") || p.title.toLowerCase().includes("chocolate") || p.title.toLowerCase().includes("biscuit") || p.title.toLowerCase().includes("cookie") || p.title.toLowerCase().includes("snack")) normalizedCategory = "Snacks";
+            else if (cat === "beauty" || cat === "skin-care" || cat.includes("personal")) normalizedCategory = "Personal Care";
+            else if (cat.includes("kitchen") || cat.includes("home")) normalizedCategory = "Home & Kitchen";
 
             return {
               ...p,
@@ -233,9 +239,15 @@ export default function App() {
   }).filter(Boolean), [cart, products]);
 
   const filteredProducts = useMemo(() => {
-    if (!searchQuery) return products;
-    return products.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
-  }, [products, searchQuery]);
+    let filtered = products;
+    if (selectedCategory) {
+      filtered = filtered.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
+    }
+    if (searchQuery) {
+      filtered = filtered.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+    return filtered;
+  }, [products, searchQuery, selectedCategory]);
 
   const bestSellers = useMemo(() => filteredProducts.slice(0, 24), [filteredProducts]);
 
@@ -341,7 +353,14 @@ export default function App() {
           </div>
           <div className="category-row">
             {categoryItems.map((item) => (
-              <article className="category-card" key={item.title}>
+              <article 
+                className={`category-card ${selectedCategory === item.title ? 'active' : ''}`} 
+                key={item.title}
+                onClick={() => {
+                  setSelectedCategory(selectedCategory === item.title ? null : item.title);
+                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 <img src={item.image} alt={item.title} />
                 <h3>{item.title}</h3>
               </article>
@@ -351,8 +370,10 @@ export default function App() {
 
         <section id="products" className="products-section">
           <div className="section-head">
-            <h2>Best Sellers</h2>
-            <a href="#products">View all</a>
+            <h2>{selectedCategory ? `${selectedCategory}` : 'Best Sellers'}</h2>
+            {selectedCategory && (
+              <button className="clear-filter" onClick={() => setSelectedCategory(null)}>View All</button>
+            )}
           </div>
           <div className="product-grid">
             {bestSellers.map((p) => (

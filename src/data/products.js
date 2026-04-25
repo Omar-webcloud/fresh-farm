@@ -9,4 +9,6 @@ export const DEMO_PRODUCTS = [
   { id: "p8", title: "Grapes", price: 3.5, stock: 110, category: "Fruits", description: "Sweet seedless grapes." },
   { id: "p9", title: "Broccoli", price: 1.4, stock: 75, category: "Vegetables", description: "Organic green broccoli." },
   { id: "p10", title: "Pumpkin", price: 3.0, stock: 45, category: "Vegetables", description: "Large fresh pumpkins." },
+  { id: "s1", title: "Cheetos Crunchy", price: 1.2, stock: 50, category: "Snacks", description: "Crunchy cheese flavored snacks.", image: "/snacks_new.png" },
+  { id: "s2", title: "Potato Chips", price: 1.0, stock: 100, category: "Snacks", description: "Classic salted potato chips.", image: "/chips.jpg" },
 ];
