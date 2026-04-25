@@ -243,7 +243,10 @@ export default function App() {
     <div className="app-shell">
       <div className="top-strip">Free delivery on orders above ৳499</div>
       <header className="navbar">
-        <div className="brand">FreshFarm</div>
+        <div className="brand">
+          <img src="/logo.png" alt="FreshFarm Logo" className="logo-img" />
+          <span>FreshFarm</span>
+        </div>
         <div className="search-bar">
           <div className="search-icon-wrapper">
             <FaSearch />
@@ -302,7 +305,7 @@ export default function App() {
             <p>Handpicked fruits, vegetables and groceries delivered fresh to your home.</p>
             <div className="hero-actions">
               <a href="#products" className="hero-button">Shop Now</a>
-              <button className="ghost-btn">See how it works</button>
+              <a href="#categories" className="ghost-btn">Explore more</a>
             </div>
           </div>
           <div className="hero-visual-wrap">
@@ -331,7 +334,7 @@ export default function App() {
           ))}
         </section>
 
-        <section className="category-strip">
+        <section id="categories" className="category-strip">
           <div className="section-head">
             <h2>Shop by Category</h2>
             <a href="#products">View all</a>
@@ -481,7 +484,10 @@ export default function App() {
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-section about">
-            <h3>FreshFarm</h3>
+            <h3>
+              <img src="/logo.png" alt="FreshFarm Logo" className="logo-img" />
+              FreshFarm
+            </h3>
             <p>Fresh fruits, vegetables and groceries delivered fresh to your home.</p>
           </div>
           <div className="footer-section links">

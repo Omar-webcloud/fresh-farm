@@ -60,7 +60,8 @@ body {
   box-shadow: var(--shadow);
 }
 
-.brand { font-weight: 800; font-size: 25px; letter-spacing: -0.03em; }
+.brand { font-weight: 800; font-size: 25px; letter-spacing: -0.03em; display: flex; align-items: center; gap: 8px; }
+.logo-img { height: 32px; width: auto; object-fit: contain; }
 .search-bar { position: relative; }
 .search-bar input {
   width: 100%;
@@ -368,7 +369,7 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
 }
-.footer-section h3 { margin: 0 0 8px; }
+.footer-section h3 { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
 .footer-section p,
 .footer-section li,
 .footer-section a { color: var(--text-muted); font-size: 14px; text-decoration: none; list-style: none; margin: 4px 0; padding: 0; }
