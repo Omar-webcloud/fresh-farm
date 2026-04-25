@@ -48,6 +48,10 @@ export default function App() {
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [favorites, setFavorites] = useState(() => {
+    const saved = sessionStorage.getItem("freshfarm_favorites");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const categoryItems = useMemo(() => {
     const categories = [
@@ -108,6 +112,10 @@ export default function App() {
     document.documentElement.setAttribute("data-theme", theme);
     sessionStorage.setItem("fresh_theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    sessionStorage.setItem("freshfarm_favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -209,6 +217,17 @@ export default function App() {
 
   const removeFromCart = (id) => {
     setCart((c) => { const copy = { ...c }; delete copy[id]; return copy; });
+  };
+
+  const toggleFavorite = (id) => {
+    const isFav = favorites.includes(id);
+    if (isFav) {
+      toast.info("Removed from favorites", { position: "bottom-right", autoClose: 1500 });
+      setFavorites((prev) => prev.filter((fid) => fid !== id));
+    } else {
+      toast.success("Added to favorites!", { position: "bottom-right", autoClose: 1500 });
+      setFavorites((prev) => [...prev, id]);
+    }
   };
 
   const handleCheckout = () => {
@@ -389,7 +408,14 @@ export default function App() {
             ) : bestSellers.length > 0 ? (
               bestSellers.map((p) => (
                 <div className="product-shell" key={p.id}>
-                  <button className="fav-btn" aria-label="Wishlist">
+                  <button 
+                    className={`fav-btn ${favorites.includes(p.id) ? 'active' : ''}`} 
+                    aria-label="Wishlist"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(p.id);
+                    }}
+                  >
                     <FaHeart />
                   </button>
                   <ProductCard
