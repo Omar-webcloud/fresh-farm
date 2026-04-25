@@ -54,7 +54,7 @@ export default function App() {
       { title: "Groceries", default: "/tomato.jpg" },
       { title: "Dairy & Eggs", default: "/banana.jpg" },
       { title: "Beverages", default: "/orange.jpg" },
-      { title: "Snacks", default: "/mango.jpg" },
+      { title: "Snacks", image: "/snacks.png", fixed: true },
       { title: "Meat & Fish", default: "/pumpkin.jpg" },
       { title: "Personal Care", default: "/apple.jpg" },
       { title: "Home & Kitchen", default: "/tomato.jpg" }
