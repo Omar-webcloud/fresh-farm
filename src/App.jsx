@@ -138,7 +138,20 @@ export default function App() {
           .flatMap((res) => res.value.products || []);
 
         const mapped = allApiProducts
-          .filter((p) => p?.title && !p.title.toLowerCase().includes("soft drink"))
+          .filter((p) => {
+            if (!p?.title) return false;
+            const title = p.title.toLowerCase();
+            const cat = p.category?.toLowerCase() || "";
+            
+            // Filter out electronics and other non-farm items
+            const electronics = ["smartphones", "laptops", "tablets", "mobile-accessories", "automotive", "motorcycle", "lighting"];
+            if (electronics.includes(cat)) return false;
+            
+            // Filter out soft drinks
+            if (title.includes("soft drink")) return false;
+            
+            return true;
+          })
           .map((p) => {
             const cat = p.category?.toLowerCase() || "";
             const tags = p.tags?.map(t => t.toLowerCase()) || [];
@@ -146,7 +159,7 @@ export default function App() {
             let normalizedCategory = "Groceries";
             if (cat === "vegetables" || tags.includes("vegetables")) normalizedCategory = "Vegetables";
             else if (cat === "fruits" || tags.includes("fruits")) normalizedCategory = "Fruits";
-            else if (cat === "meat" || tags.includes("meat")) normalizedCategory = "Meat & Fish";
+            else if (cat === "meat" || tags.includes("meat") || p.title.toLowerCase().includes("fish") || p.title.toLowerCase().includes("meat") || p.title.toLowerCase().includes("chicken") || p.title.toLowerCase().includes("beef")) normalizedCategory = "Meat & Fish";
             else if (cat === "dairy" || tags.includes("dairy")) normalizedCategory = "Dairy & Eggs";
             else if (cat === "beverages" || tags.includes("beverages")) normalizedCategory = "Beverages";
             else if (cat.includes("snacks") || cat.includes("confectionery") || tags.includes("snacks") || p.title.toLowerCase().includes("chips") || p.title.toLowerCase().includes("chocolate") || p.title.toLowerCase().includes("biscuit") || p.title.toLowerCase().includes("cookie") || p.title.toLowerCase().includes("snack")) normalizedCategory = "Snacks";
@@ -162,11 +175,20 @@ export default function App() {
 
         setProducts((prev) => {
           const merged = [...prev, ...mapped];
-          const seen = new Set();
+          const seenId = new Set();
+          const seenApple = new Set();
+          
           return merged.filter((item) => {
-            const key = String(item.id);
-            if (seen.has(key)) return false;
-            seen.add(key);
+            const idKey = String(item.id);
+            if (seenId.has(idKey)) return false;
+            seenId.add(idKey);
+            
+            // Special handling for Apple to keep only one
+            if (item.title.toLowerCase() === "apple") {
+              if (seenApple.has("apple")) return false;
+              seenApple.add("apple");
+            }
+            
             return true;
           });
         });
