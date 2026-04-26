@@ -12,6 +12,11 @@ import {
   FaSearch,
   FaTimes,
   FaUser,
+  FaMapMarkerAlt,
+  FaTruck,
+  FaBolt,
+  FaShieldAlt,
+  FaUndoAlt,
   FaHeart,
   FaArrowRight
 } from "react-icons/fa";
