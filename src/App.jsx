@@ -12,16 +12,10 @@ import {
   FaSearch,
   FaTimes,
   FaUser,
-  FaMapMarkerAlt,
-  FaMoon,
-  FaSun,
-  FaTruck,
-  FaBolt,
-  FaShieldAlt,
-  FaUndoAlt,
   FaHeart,
   FaArrowRight
 } from "react-icons/fa";
+import { FiSun, FiMoon } from "react-icons/fi";
 import { DEMO_PRODUCTS } from "./data/products";
 import { bdPhone, publicImage } from "./utils/helpers";
 
@@ -58,12 +52,12 @@ export default function App() {
       { title: "Fruits", image: "/apple.jpg", fixed: true },
       { title: "Vegetables", image: "/broccoli.jpg", fixed: true },
       { title: "Groceries", default: "/tomato.jpg" },
-      { title: "Dairy & Eggs", default: "/banana.jpg" },
-      { title: "Beverages", default: "/orange.jpg" },
+      { title: "Dairy & Eggs", default: "/milk.jpg" },
+      { title: "Beverages", default: "/orange-juice.jpg" },
       { title: "Snacks", image: "/snacks_new.png", fixed: true },
-      { title: "Meat & Fish", default: "/pumpkin.jpg" },
-      { title: "Personal Care", default: "/apple.jpg" },
-      { title: "Home & Kitchen", default: "/tomato.jpg" }
+      { title: "Meat & Fish", default: "/fish-steak.jpg" },
+      { title: "Personal Care", default: "/personal-care.png" },
+      { title: "Home & Kitchen", default: "/kitchen.jpg" }
     ];
 
     return categories.map(cat => {
@@ -335,7 +329,7 @@ export default function App() {
             onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? <FaSun /> : <FaMoon />}
+            {theme === "dark" ? <FiSun /> : <FiMoon />}
           </button>
           {user ? (
             <button onClick={signOut} className="nav-btn-icon" aria-label="Sign out">
@@ -476,7 +470,7 @@ export default function App() {
               <p>On personal care</p>
               <button>Shop Now <FaArrowRight /></button>
             </div>
-            <img src="/banana.jpg" alt="Personal care offer" loading="lazy" />
+            <img src="/personal-care.png" alt="Personal care offer" loading="lazy" />
           </article>
         </section>
       </main>
