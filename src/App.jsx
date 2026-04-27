@@ -142,11 +142,11 @@ export default function App() {
             const title = p.title.toLowerCase();
             const cat = p.category?.toLowerCase() || "";
             
-            // Filter out electronics and other non-farm items
+            
             const electronics = ["smartphones", "laptops", "tablets", "mobile-accessories", "automotive", "motorcycle", "lighting"];
             if (electronics.includes(cat)) return false;
             
-            // Filter out soft drinks
+            
             if (title.includes("soft drink")) return false;
             
             return true;
@@ -182,7 +182,7 @@ export default function App() {
             if (seenId.has(idKey)) return false;
             seenId.add(idKey);
             
-            // Special handling for Apple to keep only one
+            
             if (item.title.toLowerCase() === "apple") {
               if (seenApple.has("apple")) return false;
               seenApple.add("apple");
@@ -294,7 +294,34 @@ export default function App() {
     return filtered;
   }, [products, searchQuery, selectedCategory]);
 
-  const bestSellers = useMemo(() => filteredProducts.slice(0, 24), [filteredProducts]);
+  const featuredProducts = useMemo(() => {
+    if (selectedCategory) return filteredProducts;
+    
+    
+    const grouped = products.reduce((acc, p) => {
+      const cat = p.category || "Other";
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(p);
+      return acc;
+    }, {});
+    
+    const mixed = [];
+    const categories = Object.keys(grouped);
+    let i = 0;
+    while (mixed.length < 12) {
+      let addedInThisRound = false;
+      for (const cat of categories) {
+        if (grouped[cat][i]) {
+          mixed.push(grouped[cat][i]);
+          addedInThisRound = true;
+        }
+        if (mixed.length >= 12) break;
+      }
+      if (!addedInThisRound) break;
+      i++;
+    }
+    return mixed;
+  }, [products, filteredProducts, selectedCategory]);
 
   return (
     <div className="app-shell">
@@ -415,7 +442,7 @@ export default function App() {
 
         <section id="products" className="products-section">
           <div className="section-head">
-            <h2>{selectedCategory ? `${selectedCategory}` : 'Best Sellers'}</h2>
+            <h2>{selectedCategory ? `${selectedCategory}` : 'Featured'}</h2>
             {selectedCategory && (
               <button className="clear-filter" onClick={() => setSelectedCategory(null)}>View All</button>
             )}
@@ -426,8 +453,8 @@ export default function App() {
                 <div className="loader-spinner"></div>
                 <p>Fetching fresh items...</p>
               </div>
-            ) : bestSellers.length > 0 ? (
-              bestSellers.map((p) => (
+            ) : featuredProducts.length > 0 ? (
+              featuredProducts.map((p) => (
                 <div className="product-shell" key={p.id}>
                   <button 
                     className={`fav-btn ${favorites.includes(p.id) ? 'active' : ''}`} 
