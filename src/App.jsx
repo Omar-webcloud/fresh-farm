@@ -454,27 +454,21 @@ export default function App() {
 
         <section className="offer-grid">
           <article className="offer-card">
-            <div>
-              <h3>Flat 20% Off</h3>
-              <p>On your first order</p>
-              <button>Shop Now <FaArrowRight /></button>
-            </div>
+            <h3>Flat 20% Off</h3>
+            <p>On your first order</p>
+            <button>Shop Now <FaArrowRight /></button>
             <img src="/fruit-bowl.png" alt="Offer basket" loading="lazy" />
           </article>
           <article className="offer-card">
-            <div>
-              <h3>Super Savings</h3>
-              <p>On groceries & staples</p>
-              <button>Shop Now <FaArrowRight /></button>
-            </div>
+            <h3>Super Savings</h3>
+            <p>On groceries & staples</p>
+            <button>Shop Now <FaArrowRight /></button>
             <img src="/pumpkin.jpg" alt="Savings" loading="lazy" />
           </article>
           <article className="offer-card">
-            <div>
-              <h3>Up to 30% Off</h3>
-              <p>On personal care</p>
-              <button>Shop Now <FaArrowRight /></button>
-            </div>
+            <h3>Up to 30% Off</h3>
+            <p>On personal care</p>
+            <button>Shop Now <FaArrowRight /></button>
             <img src="/personal-care.png" alt="Personal care offer" loading="lazy" />
           </article>
         </section>
