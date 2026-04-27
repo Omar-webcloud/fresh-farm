@@ -25,9 +25,15 @@ import { DEMO_PRODUCTS } from "./data/products";
 import { bdPhone, publicImage } from "./utils/helpers";
 
 export default function App() {
-  const [products, setProducts] = useState(() => 
-    DEMO_PRODUCTS.map((p) => ({ ...p, image: p.image || publicImage(p.title) }))
-  );
+  const [products, setProducts] = useState(() => {
+    const initial = DEMO_PRODUCTS.map((p) => ({ ...p, image: p.image || publicImage(p.title) }));
+    const grouped = initial.reduce((acc, p) => {
+      acc[p.category] = acc[p.category] || [];
+      if (acc[p.category].length < 12) acc[p.category].push(p);
+      return acc;
+    }, {});
+    return Object.values(grouped).flat();
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState(() => {
     const savedCart = sessionStorage.getItem("freshfarm_cart");
@@ -142,12 +148,10 @@ export default function App() {
             const title = p.title.toLowerCase();
             const cat = p.category?.toLowerCase() || "";
             
+            const unwanted = ["smartphones", "laptops", "tablets", "mobile-accessories", "automotive", "motorcycle", "lighting", "furniture", "fragrances", "mens-shirts", "womens-dresses", "tops", "womens-shoes", "mens-shoes", "mens-watches", "womens-watches", "womens-bags", "womens-jewellery", "sunglasses"];
+            if (unwanted.includes(cat)) return false;
             
-            const electronics = ["smartphones", "laptops", "tablets", "mobile-accessories", "automotive", "motorcycle", "lighting"];
-            if (electronics.includes(cat)) return false;
-            
-            
-            if (title.includes("soft drink")) return false;
+            if (title.includes("soft drink") || title.includes("perfume") || title.includes("clothing")) return false;
             
             return true;
           })
@@ -177,11 +181,10 @@ export default function App() {
           const seenId = new Set();
           const seenApple = new Set();
           
-          return merged.filter((item) => {
+          const filtered = merged.filter((item) => {
             const idKey = String(item.id);
             if (seenId.has(idKey)) return false;
             seenId.add(idKey);
-            
             
             if (item.title.toLowerCase() === "apple") {
               if (seenApple.has("apple")) return false;
@@ -190,6 +193,14 @@ export default function App() {
             
             return true;
           });
+
+          const grouped = filtered.reduce((acc, p) => {
+            acc[p.category] = acc[p.category] || [];
+            if (acc[p.category].length < 12) acc[p.category].push(p);
+            return acc;
+          }, {});
+
+          return Object.values(grouped).flat();
         });
       })
       .catch(() => {
@@ -291,12 +302,11 @@ export default function App() {
     if (searchQuery) {
       filtered = filtered.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
     }
-    return filtered;
+    return filtered.slice(0, 12);
   }, [products, searchQuery, selectedCategory]);
 
   const featuredProducts = useMemo(() => {
     if (selectedCategory) return filteredProducts;
-    
     
     const grouped = products.reduce((acc, p) => {
       const cat = p.category || "Other";
@@ -631,4 +641,3 @@ export default function App() {
     </div>
   );
 }
-

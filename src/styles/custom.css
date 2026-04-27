@@ -178,7 +178,7 @@ body {
 }
 .hero-button { 
   background: var(--brand-strong);
-  color: #05140a; /* Dark text for better contrast on green */
+  color: #05140a; 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(103, 216, 153, 0.2);
 }
@@ -188,7 +188,7 @@ body {
 }
 :root[data-theme="light"] .hero-button {
   background: var(--brand-strong);
-  color: #fff; /* White text on darker green for light mode */
+  color: #fff; 
 }
 .hero-button:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 25px rgba(103, 216, 153, 0.4); }
 .ghost-btn { 
@@ -341,7 +341,7 @@ body {
 .category-card.active img { 
   background: var(--brand); 
   border-color: var(--brand); 
-  padding: 4px; /* More emphasis on the image when active */
+  padding: 4px; 
   box-shadow: 0 0 25px rgba(103, 216, 153, 0.4);
 }
 
