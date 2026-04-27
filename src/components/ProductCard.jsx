@@ -7,6 +7,9 @@ export default function ProductCard({ product, onClick, onAddToCart }) {
 
   return (
     <div className="product-card" onClick={() => onClick(product)}>
+      {product.discount && (
+        <div className="discount-badge">-{product.discount}%</div>
+      )}
       <div className="img-container">
         <img 
           src={product.image} 

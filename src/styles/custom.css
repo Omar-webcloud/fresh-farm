@@ -483,6 +483,22 @@ body {
   transform: scale(0.9);
 }
 
+.discount-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 20;
+  background: #ff3b3b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(255, 59, 59, 0.5);
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
 .offer-grid { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 

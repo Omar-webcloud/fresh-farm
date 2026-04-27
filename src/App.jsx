@@ -26,7 +26,11 @@ import { bdPhone, publicImage } from "./utils/helpers";
 
 export default function App() {
   const [products, setProducts] = useState(() => {
-    const initial = DEMO_PRODUCTS.map((p) => ({ ...p, image: p.image || publicImage(p.title) }));
+    const initial = DEMO_PRODUCTS.map((p, idx) => ({ 
+      ...p, 
+      image: p.image || publicImage(p.title),
+      discount: idx % 4 === 0 ? 15 : null 
+    }));
     const grouped = initial.reduce((acc, p) => {
       acc[p.category] = acc[p.category] || [];
       if (acc[p.category].length < 12) acc[p.category].push(p);
@@ -155,7 +159,7 @@ export default function App() {
             
             return true;
           })
-          .map((p) => {
+          .map((p, idx) => {
             const cat = p.category?.toLowerCase() || "";
             const tags = p.tags?.map(t => t.toLowerCase()) || [];
             
@@ -173,6 +177,7 @@ export default function App() {
               ...p,
               image: p.thumbnail || p.images?.[0] || "/fruit-bowl.png",
               category: normalizedCategory,
+              discount: idx % 8 === 0 ? Math.floor(Math.random() * 15) + 5 : null
             };
           });
 
